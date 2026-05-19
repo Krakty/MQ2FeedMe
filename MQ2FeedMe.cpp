@@ -133,9 +133,13 @@ bool dataFeedMe(const char* szIndex, MQTypeVar& Dest)
 
 bool InSafeZone()
 {
-	// if bufftimers are on hold we're assumign we're in a safe zone
-	// this has the additional beneficial side affect of us not needing to maintain a list of zones to ignore
-	return pLocalPlayer && pLocalPlayer->bBuffTimersOnHold;
+	// PlayerClient::bBuffTimersOnHold (offset 0x550 in upstream) is not yet
+	// exposed on the Krakty eqlib canonical PlayerClient -- it lives in
+	// game/reference/PlayerClient.h but hasn't been promoted onto the
+	// canonical class. Without it we can't detect the buff-paused safe-zone
+	// state, so fall back to "never in a safe zone" (no plugin pause) and
+	// revisit once eqlib catches up.
+	return false;
 }
 
 bool WindowOpen(const char* WindowName)
